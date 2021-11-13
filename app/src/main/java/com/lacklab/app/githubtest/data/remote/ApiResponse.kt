@@ -1,5 +1,7 @@
 package com.lacklab.app.githubtest.data.remote
 
+import com.google.gson.Gson
+import com.lacklab.app.githubtest.data.model.GitHubError
 import retrofit2.Response
 import timber.log.Timber
 import java.util.regex.Pattern
@@ -23,7 +25,7 @@ sealed class ApiResponse<T> {
                 } else {
                     ApiSuccessResponse(
                         body = body,
-                        linkHeader = response.headers().get("link")
+                        linkHeader = response.headers()["link"]
                     )
                 }
             } else {
@@ -31,7 +33,9 @@ sealed class ApiResponse<T> {
                 val errorMsg = if (msg.isNullOrEmpty()) {
                     response.message()
                 } else {
-                    msg
+                    val gitHubError = Gson().fromJson(msg, GitHubError::class.java)
+                    Timber.d("error message: ${gitHubError.message}")
+                    gitHubError.message
                 }
                 ApiErrorResponse(errorMsg ?: "unknown error")
             }
@@ -62,21 +66,6 @@ data class ApiSuccessResponse<T>(
                     Integer.parseInt(matcher.group(1)!!)
                 } catch (ex: NumberFormatException) {
                     Timber.w("cannot parse next page from $value")
-                    null
-                }
-            }
-        }
-    }
-    val nextPage: Int? by lazy(LazyThreadSafetyMode.NONE) {
-        links[NEXT_LINK]?.let { next ->
-            val matcher = PAGE_PATTERN.matcher(next)
-            if (!matcher.find() || matcher.groupCount() != 1) {
-                null
-            } else {
-                try {
-                    Integer.parseInt(matcher.group(1)!!)
-                } catch (ex: NumberFormatException) {
-                    Timber.w("cannot parse next page from %s", next)
                     null
                 }
             }

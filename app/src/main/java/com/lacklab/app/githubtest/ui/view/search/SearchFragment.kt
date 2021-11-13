@@ -38,6 +38,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 recycleViewUser.adapter = withLoadStateFooter(
                     footer = PagingLoadStateAdapter(this)
                 )
+                swipeRefresh.setOnRefreshListener { refresh() }
                 launchOnLifecycleScope {
                     loadStateFlow.collectLatest { it ->
                         swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
