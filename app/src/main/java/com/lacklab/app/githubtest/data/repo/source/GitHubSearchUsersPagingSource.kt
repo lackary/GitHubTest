@@ -29,6 +29,8 @@ class GitHubSearchUsersPagingSource (
             when(response) {
                 is ApiSuccessResponse -> {
                     data = response.body
+                    data.totalPages = response.totalPages
+
                 }
                 is ApiErrorResponse -> {
                     throw Exception(response.errorMessage)
@@ -46,7 +48,7 @@ class GitHubSearchUsersPagingSource (
             LoadResult.Page(
                 data = data.items,
                 prevKey = null,
-                nextKey = if (page == data.totalCount / NETWORK_PAGE_SIZE) null else nextPage
+                nextKey = if (page == data.totalPages) null else nextPage
             )
         } catch (ex: Exception) {
             LoadResult.Error(ex)

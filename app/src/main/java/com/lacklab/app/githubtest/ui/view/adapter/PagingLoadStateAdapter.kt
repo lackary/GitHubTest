@@ -45,9 +45,6 @@ class PagingLoadStateAdapter<T:Any, VH: RecyclerView.ViewHolder>(
                 Timber.d("binding $loadState")
                 progressBar.isVisible = loadState is LoadState.Loading
                 buttonRetry.isVisible = loadState is LoadState.Error
-//                textErrorMessage.isVisible =
-//                    !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
-//                textErrorMessage.text = (loadState as? LoadState.Error)?.error?.message
             }
         }
     }

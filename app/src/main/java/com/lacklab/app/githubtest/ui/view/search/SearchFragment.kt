@@ -3,9 +3,9 @@ package com.lacklab.app.githubtest.ui.view.search
 import android.content.Context
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
-import androidx.paging.PagingDataAdapter
 import com.google.android.material.textfield.TextInputEditText
 import com.lacklab.app.githubtest.R
 import com.lacklab.app.githubtest.base.BaseFragment
@@ -42,6 +42,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 launchOnLifecycleScope {
                     loadStateFlow.collectLatest { it ->
                         swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+
+                        val isItemEmpty =
+                            it.refresh !is LoadState.Loading
+                                    && userPagingAdapter.itemCount == 0
+                        textViewNoResult.isVisible = isItemEmpty
+                        recycleViewUser.isVisible = !isItemEmpty
 
                         // If we have an error, show a toast
                         val errorState = when {
