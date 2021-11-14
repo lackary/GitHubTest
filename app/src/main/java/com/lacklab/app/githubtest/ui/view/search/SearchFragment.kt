@@ -90,11 +90,4 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         }
     }
 
-    private fun hideKeyboard(textInputEditText: TextInputEditText) {
-        val inputMethManager =
-            context?.getSystemService(Context.INPUT_METHOD_SERVICE)
-                    as InputMethodManager
-        inputMethManager.hideSoftInputFromWindow(textInputEditText.windowToken, 0)
-    }
-
 }

@@ -44,7 +44,8 @@ sealed class ApiResponse<T> {
 }
 
 /**
- * separate class for HTTP 204 responses so that we can make ApiSuccessResponse's body non-null.
+ * separate class for HTTP 204 responses
+ * so that we can make ApiSuccessResponse's body non-null.
  */
 class ApiEmptyResponse<T> : ApiResponse<T>()
 
@@ -63,13 +64,14 @@ data class ApiSuccessResponse<T>(
                 null
             } else {
                 try {
+                    Timber.d("group: ${matcher.group(1)!!}")
                     Integer.parseInt(matcher.group(1)!!)
                 } catch (ex: NumberFormatException) {
                     Timber.w("cannot parse next page from $value")
                     null
                 }
             }
-        }
+        }?: 1
     }
 
     companion object {

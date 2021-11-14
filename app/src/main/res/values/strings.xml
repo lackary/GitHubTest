@@ -2,5 +2,7 @@
     <string name="app_name">GitHubTest</string>
     <string name="hello_world">hello world</string>
     <string name="retry">retry</string>
-    <string name="no_result_tips">No result, please pull down \n or \n change the other keyword</string>
+    <string name="no_result">
+        No result
+    </string>
 </resources>

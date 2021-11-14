@@ -1,15 +1,18 @@
 package com.lacklab.app.githubtest.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputEditText
 
 abstract class BaseFragment<DB: ViewDataBinding, VM: BaseViewModel> : Fragment() {
 
@@ -50,5 +53,12 @@ abstract class BaseFragment<DB: ViewDataBinding, VM: BaseViewModel> : Fragment()
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             execute()
         }
+    }
+
+    fun hideKeyboard(textInputEditText: TextInputEditText) {
+        val inputMethManager =
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+        inputMethManager.hideSoftInputFromWindow(textInputEditText.windowToken, 0)
     }
 }

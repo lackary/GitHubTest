@@ -21,7 +21,6 @@ class GitHubSearchUsersPagingSource (
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GitHubUser> {
-        Timber.d("load")
         val page = params.key ?: GITHUB_STARTING_PAGE_INDEX
         return try {
             val response = api.searchUser(query, page, params.loadSize)

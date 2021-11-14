@@ -14,7 +14,7 @@ class GitHubRepository @Inject constructor(
 ) {
     fun searchUser(query: String): Flow<PagingData<GitHubUser>> {
         return Pager(
-            config = PagingConfig(pageSize = 10, prefetchDistance = 2),
+            config = PagingConfig(pageSize = 10, enablePlaceholders = true),
             pagingSourceFactory = { GitHubSearchUsersPagingSource(api, query) }
         ).flow
     }
