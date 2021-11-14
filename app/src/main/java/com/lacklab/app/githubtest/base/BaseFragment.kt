@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.flow.collectLatest
 
 abstract class BaseFragment<DB: ViewDataBinding, VM: BaseViewModel> : Fragment() {
 
@@ -53,12 +56,5 @@ abstract class BaseFragment<DB: ViewDataBinding, VM: BaseViewModel> : Fragment()
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             execute()
         }
-    }
-
-    fun hideKeyboard(textInputEditText: TextInputEditText) {
-        val inputMethManager =
-            context?.getSystemService(Context.INPUT_METHOD_SERVICE)
-                    as InputMethodManager
-        inputMethManager.hideSoftInputFromWindow(textInputEditText.windowToken, 0)
     }
 }

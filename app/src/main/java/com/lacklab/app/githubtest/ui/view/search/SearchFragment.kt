@@ -13,6 +13,7 @@ import com.lacklab.app.githubtest.databinding.FragmentSearchBinding
 import com.lacklab.app.githubtest.ui.view.adapter.PagingLoadStateAdapter
 import com.lacklab.app.githubtest.ui.view.adapter.UserPagingAdapter
 import com.lacklab.app.githubtest.ui.viewmodel.SearchViewModel
+import com.lacklab.app.githubtest.utils.ui.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -34,11 +35,15 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         with(binding) {
             // handle PagingAdapter
             with(userPagingAdapter) {
-                // init recycle view
+                // set recycle view
                 recycleViewUser.adapter = withLoadStateFooter(
                     footer = PagingLoadStateAdapter(this)
                 )
+
+                //set swipe refresh
                 swipeRefresh.setOnRefreshListener { refresh() }
+
+                // handle the loadStateFlow
                 launchOnLifecycleScope {
                     loadStateFlow.collectLatest { it ->
                         swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
@@ -70,10 +75,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                     val query = textEditSearch.text.toString()
                     Timber.d("query: $query")
                     searchUser(query, viewModel)
-                    hideKeyboard(textEditSearch)
-                   true
+                    hideKeyboard(requireContext(), textEditSearch)
+                    true
                 } else {
-                   false
+                    false
                 }
 
             }
@@ -89,5 +94,4 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
             }
         }
     }
-
 }
