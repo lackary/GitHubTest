@@ -1,4 +1,4 @@
-package com.lacklab.app.githubtest.ui.viewmodel
+package com.lacklab.app.githubtest.ui.view.search
 
 import androidx.paging.PagingData
 import com.lacklab.app.githubtest.base.BaseViewModel

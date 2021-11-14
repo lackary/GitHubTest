@@ -1,18 +1,14 @@
 package com.lacklab.app.githubtest.ui.view.search
 
-import android.content.Context
 import android.view.KeyEvent
-import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
-import com.google.android.material.textfield.TextInputEditText
 import com.lacklab.app.githubtest.R
 import com.lacklab.app.githubtest.base.BaseFragment
 import com.lacklab.app.githubtest.databinding.FragmentSearchBinding
 import com.lacklab.app.githubtest.ui.view.adapter.PagingLoadStateAdapter
 import com.lacklab.app.githubtest.ui.view.adapter.UserPagingAdapter
-import com.lacklab.app.githubtest.ui.viewmodel.SearchViewModel
 import com.lacklab.app.githubtest.utils.ui.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -85,8 +81,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         }
     }
 
-    private fun searchUser(query: String,
-                           viewModel: SearchViewModel) {
+    private fun searchUser(query: String, viewModel: SearchViewModel) {
         viewModel.searchUsers(query)
         launchOnLifecycleScope {
             viewModel.usersFlow.collectLatest {

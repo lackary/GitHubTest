@@ -15,7 +15,7 @@
         android:theme="@style/Theme.GitHubTest">
         <activity
             android:screenOrientation="portrait"
-            android:name=".ui.view.search.MainActivity"
+            android:name=".ui.view.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
