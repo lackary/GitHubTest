@@ -15,6 +15,8 @@ interface GithubApi {
     @GET("search/users")
     suspend fun searchUser(
         @Query("q", encoded = true) query: String,
+//        @Query("sort") sort: String?,
+//        @Query("order") order: String?,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
     ) : ApiResponse<GitHubUsers>

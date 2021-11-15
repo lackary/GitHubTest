@@ -64,7 +64,6 @@ data class ApiSuccessResponse<T>(
                 null
             } else {
                 try {
-                    Timber.d("group: ${matcher.group(1)!!}")
                     Integer.parseInt(matcher.group(1)!!)
                 } catch (ex: NumberFormatException) {
                     Timber.w("cannot parse next page from $value")

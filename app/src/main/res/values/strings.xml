@@ -3,16 +3,27 @@
     <string name="hello_world">hello world</string>
     <string name="retry">retry</string>
     <string name="no_result">No result</string>
-    <string name="input_keyword">please user name</string>
-    <string name="repos">repos</string>
-    <string name="follower">follower</string>
+    <string name="input_keyword">please input user name</string>
+    <string name="input_number">please input number</string>
+    <string name="filter_repos">repos</string>
+    <string name="filter_follower">followers</string>
     <string name="submit">submit</string>
+    <string name="clean">clean</string>
+    <string name="gt">&gt;</string>
+    <string name="gt_eq">&gt;=</string>
+    <string name="eq">=</string>
+    <string name="lt_eq">&lt;=</string>
+    <string name="lt">&lt;</string>
     <string-array name="condition_type">
         <item>&gt;</item>    <!-- >  -->
         <item>&gt;=</item>   <!-- >= -->
         <item> = </item>     <!-- =  -->
         <item>&lt;=</item>   <!-- <= -->
         <item>&lt;</item>    <!-- <  -->
+    </string-array>
+    <string-array name="filter_type">
+        <item>repos</item>
+        <item>follower</item>
     </string-array>
     <string name="content_description_filter">filter for searching user</string>
 </resources>
