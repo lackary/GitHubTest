@@ -14,7 +14,7 @@ interface GithubApi {
 
     @GET("search/users")
     suspend fun searchUser(
-        @Query("q") query: String,
+        @Query("q", encoded = true) query: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
     ) : ApiResponse<GitHubUsers>

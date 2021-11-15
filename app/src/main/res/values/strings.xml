@@ -3,5 +3,16 @@
     <string name="hello_world">hello world</string>
     <string name="retry">retry</string>
     <string name="no_result">No result</string>
-    <string name="input_keyword">please search keyword</string>
+    <string name="input_keyword">please user name</string>
+    <string name="repos">repos</string>
+    <string name="follower">follower</string>
+    <string name="submit">submit</string>
+    <string-array name="condition_type">
+        <item>&gt;</item>    <!-- >  -->
+        <item>&gt;=</item>   <!-- >= -->
+        <item> = </item>     <!-- =  -->
+        <item>&lt;=</item>   <!-- <= -->
+        <item>&lt;</item>    <!-- <  -->
+    </string-array>
+    <string name="content_description_filter">filter for searching user</string>
 </resources>

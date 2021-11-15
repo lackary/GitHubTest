@@ -4,6 +4,7 @@ import android.view.KeyEvent
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.lacklab.app.githubtest.R
 import com.lacklab.app.githubtest.base.BaseFragment
 import com.lacklab.app.githubtest.databinding.FragmentSearchBinding
@@ -40,6 +41,43 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 swipeRefresh.setOnRefreshListener { refresh() }
 
                 // handle the loadStateFlow
+                handleLoadState(binding, this)
+            }
+
+            // hold input by keyboard
+            textEditSearch.setOnKeyListener { v, keyCode, event ->
+                // process the event that click
+                if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    val query = textEditSearch.text.toString()
+                    Timber.d("query: $query")
+                    searchUser(query, viewModel)
+                    hideKeyboard(requireContext(), textEditSearch)
+                    true
+                } else {
+                    false
+                }
+
+            }
+
+            handleBottomSheetEvent(this)
+        }
+    }
+
+    private fun searchUser(query: String, viewModel: SearchViewModel) {
+        viewModel.searchUsers(query)
+        launchOnLifecycleScope {
+            viewModel.usersFlow.collectLatest {
+                userPagingAdapter.submitData(it)
+            }
+        }
+    }
+
+    private fun handleLoadState(
+        binding: FragmentSearchBinding,
+        pagingAdapter: UserPagingAdapter
+    ) {
+        with(binding) {
+            with(pagingAdapter) {
                 launchOnLifecycleScope {
                     loadStateFlow.collectLatest { it ->
                         swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
@@ -58,34 +96,26 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                             else -> null
                         }
                         errorState?.let {
-                            showToastMessage(it.error.message.toString())
+                            if(pagingAdapter.itemCount == 0)
+                                showToastMessage(it.error.message.toString())
                         }
                     }
                 }
             }
-
-            // hold input by keyboard
-            textEditSearch.setOnKeyListener { v, keyCode, event ->
-                // process the event that click
-                if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    val query = textEditSearch.text.toString()
-                    Timber.d("query: $query")
-                    searchUser(query, viewModel)
-                    hideKeyboard(requireContext(), textEditSearch)
-                    true
-                } else {
-                    false
-                }
-
-            }
         }
     }
 
-    private fun searchUser(query: String, viewModel: SearchViewModel) {
-        viewModel.searchUsers(query)
-        launchOnLifecycleScope {
-            viewModel.usersFlow.collectLatest {
-                userPagingAdapter.submitData(it)
+    private fun handleBottomSheetEvent(binding: FragmentSearchBinding) {
+        with(binding) {
+            // set bottom sheet event
+            val bottomSheetBehavior =
+                BottomSheetBehavior.from(includedBottomSheetFilter.layoutBottomSheet)
+            imageButtonFilter.setOnClickListener {
+                if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                } else {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
             }
         }
     }
