@@ -13,10 +13,9 @@ import retrofit2.http.Query
 interface GithubApi {
 
     @GET("search/users")
-    suspend fun searchUser(
+    suspend fun searchUsers(
         @Query("q", encoded = true) query: String,
-//        @Query("sort") sort: String?,
-//        @Query("order") order: String?,
+        @Query("order") order: String? = "desc",
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
     ) : ApiResponse<GitHubUsers>

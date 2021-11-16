@@ -7,6 +7,7 @@ import androidx.paging.LoadState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.lacklab.app.githubtest.R
 import com.lacklab.app.githubtest.base.BaseFragment
+import com.lacklab.app.githubtest.databinding.BottomSheetFilterBinding
 import com.lacklab.app.githubtest.databinding.FragmentSearchBinding
 import com.lacklab.app.githubtest.databinding.ItemFilterBinding
 import com.lacklab.app.githubtest.ui.view.adapter.PagingLoadStateAdapter
@@ -50,9 +51,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                     // process the event that click
                     if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                         val query = textEditSearch.text.toString()
-                        keyword.postValue(query)
+                        keyword.value = query
                         Timber.d("query: $query")
-                        searchUsers(query, viewModel)
+                        searchUsers(viewModel)
                         hideKeyboard(requireContext(), textEditSearch)
                         true
                     } else {
@@ -89,6 +90,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                                     && userPagingAdapter.itemCount == 0
                         textViewNoResult.isVisible = isItemEmpty
                         recycleViewUser.isVisible = !isItemEmpty
+                        imageButtonFilter.isVisible = !isItemEmpty
 
                         // If we have an error, show a toast
                         val errorState = when {
@@ -119,14 +121,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 // set and handle followers
                 setItemFilter(includedFollowers, R.string.filter_follower)
                 handleItemFilter(includedFollowers, R.string.filter_follower, viewModel)
+
+                handleOrder(this, viewModel)
                 
                 materialButtonSubmit.setOnClickListener {
-                    submitFilter(viewModel)
+                    submitFilter(this, viewModel)
                     setBottomSheetBehavior(binding)
                 }
 
-                materialButtonClean.setOnClickListener {
-                    cleanBottomSheet(binding, viewModel)
+                materialButtonInit.setOnClickListener {
+                    defaultBottomSheet(binding, viewModel)
                     setBottomSheetBehavior(binding)
                 }
             }
@@ -148,7 +152,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
     private fun handleItemFilter(binding: ItemFilterBinding, id: Int, viewModel: SearchViewModel) {
         with(binding) {
             var condition: String? = null
-            var number: String? = null
             radioGroupCondition.setOnCheckedChangeListener { group, checkedId ->
                 condition =
                     when(checkedId) {
@@ -159,17 +162,30 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                         R.id.radio_button_lt -> ":" + getString(R.string.lt)
                         else -> null
                     }
-                setViewModelConditionValue(id, viewModel, condition, number)
+                setViewModelConditionValue(id, viewModel, condition)
             }
             textEditFilter.setOnKeyListener { v, keyCode, event ->
                 if(event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    number = textEditFilter.text.toString()
-                    setViewModelConditionValue(id, viewModel, condition, number)
+//                    number = textEditFilter.text.toString()
+//                    setViewModelConditionValue(id, viewModel, condition, number)
                     hideKeyboard(requireContext(), textEditFilter)
                     true
                 } else {
                     false
                 }
+            }
+        }
+    }
+
+    private fun handleOrder(binding: BottomSheetFilterBinding, viewModel: SearchViewModel) {
+        with(binding){
+            radioGroupOrder.setOnCheckedChangeListener { group, checkedId ->
+                val order = when(checkedId) {
+                    R.id.radio_button_desc -> getString(R.string.desc)
+                    R.id.radio_button_asc -> getString(R.string.asc)
+                    else -> getString(R.string.desc)
+                }
+                viewModel.order.value = order
             }
         }
     }
@@ -191,35 +207,42 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         }
     }
 
+
     /**
      * submit the value of filter
      * */
-    private fun submitFilter(viewModel: SearchViewModel) {
-        with(viewModel) {
-            val query =
-                keyword.value + reposCondition.value + followerCondition.value
-            searchUsers(query, viewModel)
+    private fun submitFilter(binding: BottomSheetFilterBinding, viewModel: SearchViewModel) {
+        with(binding) {
+            val reposNum = includedRepos.textEditFilter.text.toString()
+            val followersNum = includedFollowers.textEditFilter.text.toString()
+            with(viewModel) {
+                reposNumber.value = reposNum
+                followersNumber.value = followersNum
+                searchUsers(viewModel)
+            }
         }
+
     }
 
     /**
      * Clean the all of value in BottomSheet
      * */
-    private fun cleanBottomSheet(binding: FragmentSearchBinding, viewModel: SearchViewModel) {
+    private fun defaultBottomSheet(binding: FragmentSearchBinding, viewModel: SearchViewModel) {
         with(binding) {
             with(includedBottomSheetFilter) {
                 includedRepos.textEditFilter.text?.clear()
                 includedRepos.radioGroupCondition.clearCheck()
                 includedFollowers.textEditFilter.text?.clear()
                 includedFollowers.radioGroupCondition.clearCheck()
+                radioGroupOrder.check(R.id.radio_button_desc)
             }
         }
         with(viewModel) {
-            reposCondition.postValue("")
-            followerCondition.postValue("")
-            val query = keyword.value!!
-            searchUsers(query, this)
+            reposCondition.value = ""
+            followerCondition.value = ""
+            searchUsers(this)
         }
+
     }
 
     /**
@@ -229,18 +252,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         id: Int,
         viewModel: SearchViewModel,
         condition: String?,
-        number: String?
     ) {
         with(viewModel) {
-            Timber.d("text: ${getString(id)}")
             when(id) {
                 R.string.filter_repos -> {
-                    reposCondition.postValue(
-                        "+" + getString(id) + condition + number)
+                    reposCondition.value =
+                        "+" + getString(id) + condition
                 }
                 R.string.filter_follower -> {
-                    followerCondition.postValue(
-                        "+" + getString(id) + condition + number)
+                    followerCondition.value =
+                        "+" + getString(id) + condition
                 }
             }
         }
@@ -250,11 +271,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
     /**
      * call the api of GitHub
      * */
-    private fun searchUsers(query: String, viewModel: SearchViewModel) {
-        viewModel.searchUsers(query)
-        launchOnLifecycleScope {
-            viewModel.usersFlow.collectLatest {
-                userPagingAdapter.submitData(it)
+    private fun searchUsers(viewModel: SearchViewModel) {
+        with(viewModel) {
+            viewModel.searchUsers()
+            launchOnLifecycleScope {
+                usersFlow.collectLatest {
+                    userPagingAdapter.submitData(it)
+                }
             }
         }
     }

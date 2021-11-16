@@ -14,7 +14,8 @@ import timber.log.Timber
 
 class GitHubSearchUsersPagingSource (
     private val api: GithubApi,
-    private val query: String
+    private val query: String,
+    private val order: String?,
 ) : PagingSource<Int, GitHubUser>() {
     override fun getRefreshKey(state: PagingState<Int, GitHubUser>): Int? {
         return null
@@ -23,7 +24,11 @@ class GitHubSearchUsersPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GitHubUser> {
         val page = params.key ?: GITHUB_STARTING_PAGE_INDEX
         return try {
-            val response = api.searchUser(query, page, params.loadSize)
+            val response = api.searchUsers(
+                query = query,
+                order = order,
+                page = page,
+                perPage = params.loadSize)
             var data: GitHubUsers? = null
             when(response) {
                 is ApiSuccessResponse -> {

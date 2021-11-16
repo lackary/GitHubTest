@@ -7,8 +7,12 @@
     <string name="input_number">please input number</string>
     <string name="filter_repos">repos</string>
     <string name="filter_follower">followers</string>
+    <string name="filter_order">order</string>
+    <string name="desc">desc</string>
+    <string name="asc">asc</string>
+    <string name="best_match">best match</string>
     <string name="submit">submit</string>
-    <string name="clean">clean</string>
+    <string name="init">init</string>
     <string name="gt">&gt;</string>
     <string name="gt_eq">&gt;=</string>
     <string name="eq">=</string>

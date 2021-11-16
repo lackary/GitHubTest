@@ -9,7 +9,7 @@
         android:id="@+id/layout_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary"
+        android:background="@drawable/bottom_sheet_bg"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_hideable="true"
         app:behavior_peekHeight="0dp">
@@ -24,15 +24,45 @@
             <include
                 android:id="@+id/included_repos"
                 layout="@layout/item_filter" />
-
             <include
                 android:id="@+id/included_followers"
                 layout="@layout/item_filter" />
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_view_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/filter_order"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+                <RadioGroup
+                    android:id="@+id/radio_group_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:orientation="horizontal"
+                    android:checkedButton="@id/radio_button_desc"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_order"
+                    app:layout_constraintStart_toStartOf="parent">
+                    <RadioButton
+                        android:id="@+id/radio_button_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/desc"/>
+                    <RadioButton
+                        android:id="@+id/radio_button_asc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/asc"/>
+                </RadioGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/material_button_submit"
                     android:layout_width="wrap_content"
@@ -49,10 +79,10 @@
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.5"/>
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/material_button_clean"
+                    android:id="@+id/material_button_init"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/clean"
+                    android:text="@string/init"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/guideline"

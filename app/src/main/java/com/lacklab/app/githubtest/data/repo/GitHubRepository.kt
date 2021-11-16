@@ -12,10 +12,12 @@ import javax.inject.Inject
 class GitHubRepository @Inject constructor(
     private val api: GithubApi
 ) {
-    fun searchUser(query: String): Flow<PagingData<GitHubUser>> {
+    fun searchUsers(query: String, order: String?): Flow<PagingData<GitHubUser>> {
         return Pager(
             config = PagingConfig(pageSize = 10, enablePlaceholders = true),
-            pagingSourceFactory = { GitHubSearchUsersPagingSource(api, query) }
+            pagingSourceFactory = {
+                GitHubSearchUsersPagingSource(api = api, query = query, order = order)
+            }
         ).flow
     }
 }
