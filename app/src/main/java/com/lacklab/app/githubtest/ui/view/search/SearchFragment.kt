@@ -1,6 +1,8 @@
 package com.lacklab.app.githubtest.ui.view.search
 
 import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
@@ -71,7 +73,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         }
     }
 
-
     /**
      * handle the loadState of PagingDataAdapter
      * */
@@ -104,6 +105,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                         }
                     }
                 }
+            }
+            with(recycleViewUser) {
+                setOnTouchListener(object : View.OnTouchListener{
+                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                            when(event?.action) {
+                                MotionEvent.ACTION_DOWN -> collapseBottomSheet(binding)
+                            }
+                            return v?.onTouchEvent(event) ?: true
+                        }
+                    })
             }
         }
     }
@@ -207,6 +218,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         }
     }
 
+    private fun collapseBottomSheet(binding: FragmentSearchBinding) {
+        with(binding) {
+            val bottomSheetBehavior =
+                BottomSheetBehavior.from(includedBottomSheetFilter.layoutBottomSheet)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+    }
 
     /**
      * submit the value of filter
