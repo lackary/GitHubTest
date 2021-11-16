@@ -131,7 +131,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
 
                 materialButtonInit.setOnClickListener {
                     defaultBottomSheet(binding, viewModel)
-                    setBottomSheetBehavior(binding)
                 }
             }
         }
@@ -248,7 +247,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
         with(viewModel) {
             reposCondition.value = ""
             followerCondition.value = ""
-            searchUsers(this)
         }
 
     }
