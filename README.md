@@ -1,5 +1,9 @@
 # GitHubTest
-GitHub Test
+GitHub App for searching users
+## Screenshot
+<p align="center">
+<img src="/preview.gif" width="40%"/>
+</p>
 
 ## Tech Stack
 - MVVM Architecture
