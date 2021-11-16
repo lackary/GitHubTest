@@ -70,6 +70,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                 setBottomSheetBehavior(this)
             }
 
+            with(recycleViewUser) {
+                setOnTouchListener(object : View.OnTouchListener{
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        when(event?.action) {
+                            MotionEvent.ACTION_DOWN -> collapseBottomSheet(binding)
+                        }
+                        return v?.onTouchEvent(event) ?: true
+                    }
+                })
+            }
+
         }
     }
 
@@ -105,16 +116,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>() {
                         }
                     }
                 }
-            }
-            with(recycleViewUser) {
-                setOnTouchListener(object : View.OnTouchListener{
-                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                            when(event?.action) {
-                                MotionEvent.ACTION_DOWN -> collapseBottomSheet(binding)
-                            }
-                            return v?.onTouchEvent(event) ?: true
-                        }
-                    })
             }
         }
     }
